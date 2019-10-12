@@ -38,7 +38,7 @@ def post_user(user, token):
     url = settings.MM['ADDRESS'] + '/api/v4/users'
     try:
         r = requests.post(
-            'http://172.2.0.2:8000/api/v4/users',
+            url,
             headers=headers,
             data=json.dumps(user)
             )
@@ -95,7 +95,7 @@ def create_user(user, password):
 def user_request(access_token):
     try:
         pUrl = ( 
-            settings.POOL_AUTH['HOST'] + 
+            settings.POOL_AUTH['HOST_INT'] + 
             settings.POOL_AUTH['AUTH_SERVER'] + 
             '/oauth2/rest/profile?access_token=' + 
             access_token
@@ -115,14 +115,14 @@ def createUser(request):
         password = body['password']
         
         if 'access_token' not in request.session:
-            error = '{"Error": "user not authenticated"}'
+            error = '{"status": "user not authenticated"}'
             return HttpResponse(error, 401)
         else:
             access_token = request.session['access_token']
             try:
 
                 pUrl = ( 
-                    settings.POOL_AUTH['HOST'] + 
+                    settings.POOL_AUTH['HOST_INT'] + 
                     settings.POOL_AUTH['AUTH_SERVER'] + 
                     '/oauth2/rest/profile?access_token=' + 
                     access_token

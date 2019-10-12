@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  canal-backend:
+    image: vivaconagua/canal-backend:0.0.1
+    build: .
+    container_name: canal-backend
+    volumes:
+      - ./canal/settings.py:/app/canal/settings.py
+    networks:
+      default:
+        ipv4_address: 172.2.0.33
+
+# start docker in pool-network
+networks:
+  default:
+    external:
+      name: pool-network
+

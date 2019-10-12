@@ -21,8 +21,9 @@ def login_pool(request):
             '/oauth2/code/get?client_id=' + 
             settings.POOL_AUTH['CLIENT_ID'] +
             '&ajax=true&response_type=code&state=&redirect_uri=' +
-            settings.POOL_AUTH['HOST'] +
-            '/matter/auth/redirectUri/'
+            settings.POOL_AUTH['HOST'] + '/' +
+            settings.CONTEXTPATH +
+            'auth/redirectUri/'
             )
     return HttpResponseRedirect(auth_code_url)
 # redirectUri for handling token
@@ -31,15 +32,16 @@ def redirect_uri(request):
     authCode = request.GET.get('code', 'value')
     # build url for request the access_token
     url = (
-            settings.POOL_AUTH['HOST'] + 
+            settings.POOL_AUTH['HOST_INT'] + 
             settings.POOL_AUTH['AUTH_SERVER'] + 
             '/oauth2/access_token?client_id=' +
             settings.POOL_AUTH['CLIENT_ID'] +
             '&ajax=true&grant_type=authorization_code&code=' + 
             authCode + 
             '&state=&redirect_uri=' + 
-             settings.POOL_AUTH['HOST'] + 
-            '/matter/auth/redirectUri/'
+             settings.POOL_AUTH['HOST'] + '/' +
+             settings.CONTEXTPATH +
+            'auth/redirectUri/'
             )
     
     # request the access_token
@@ -64,7 +66,7 @@ def redirect_uri(request):
     # request user
     try:
         user_url = ( 
-            settings.POOL_AUTH['HOST'] + 
+            settings.POOL_AUTH['HOST_INT'] + 
             settings.POOL_AUTH['AUTH_SERVER'] + 
             '/oauth2/rest/profile?access_token=' + 
             access_token
