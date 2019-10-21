@@ -30,7 +30,7 @@ ALLOWED_HOSTS = [".localhost"]
 
 CONTEXTPATH = 'backend/canal/'
 MM = {
-        'ID': 'admin@mattermost.de',
+        'ID': 'admin@vivaconagua.org',
         'PASSWORD': 'password',
         'ADDRESS': 'http://172.2.0.34:8000' 
         }
@@ -39,7 +39,7 @@ POOL_AUTH = {
         'CLIENT_ID': 'mattermost',
         'CLIENT_SECRET': 'secret',
         'HOST': 'http://localhost',
-        'HOST_INT': 'http://drops:9000'
+        'HOST_INT': 'http://172.2.0.3:9000'
         }
 
 # Application definition
