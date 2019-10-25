@@ -16,7 +16,7 @@ import requests
 def hasAccount(request):
     if 'access_token' not in request.session:
         error = '{"status": "user not authenticated"}'
-        return HttpResponse(error, 401)
+        return HttpResponse(error, status=401)
     else:
         access_token = request.session['access_token']
         dropsApi = DropsApi()
