@@ -49,6 +49,7 @@ def redirect_uri(request):
         try:
             tokenJson = json.loads(access_token_response.text)
             access_token = tokenJson['access_token']
+            request.session['access_token'] = access_token
         # if token empty return 401
         except KeyError:
             return HttpResponse({'Error': 'No access_token'}, status=401)
@@ -56,7 +57,6 @@ def redirect_uri(request):
     else: 
         return HttpResponse(access_token_response.text, status=access_token_response.status_code)
     # store token in session
-    request.session['access_token'] = access_token
     # request profile and handle response
     profile = dropsApi.get_profile(access_token)
     if profile == None:
