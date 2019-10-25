@@ -31,7 +31,7 @@ ALLOWED_HOSTS = [".localhost"]
 CONTEXTPATH = 'backend/canal/'
 MM = {
         'ID': 'admin@vivaconagua.org',
-        'PASSWORD': 'password',
+        'PASSWORD': 'Password23!23!',
         'ADDRESS': 'http://172.2.0.34:8000' 
         }
 POOL_AUTH = {

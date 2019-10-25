@@ -24,6 +24,7 @@ class MattermostApi:
         self.urls['login'] = settings.MM['ADDRESS'] + '/api/v4/users/login'
         self.urls['create_user'] = settings.MM['ADDRESS'] + '/api/v4/users'
         self.urls['logout'] = settings.MM['ADDRESS'] + '/users/logout'
+        self.urls['get_user_email'] = settings.MM['ADDRESS'] + '/users/email'
 
 
     ## Login
@@ -87,6 +88,31 @@ class MattermostApi:
             return response
 
     
+    def get_user_email(self, email):
+        access_token = self.login()
+        if access_token == None:
+            return None
+        else:
+            # create headers for request
+            headers = self.headers
+            headers['Authorization'] = 'Bearer ' + access_token
+            # url for requests
+            url = self.urls['get_user_email'] + '/' + email
+            #try request with get_user_email url
+            try:
+                response = requests.get(url)
+            except requests.exceptions.MissingSchema as e:
+                logger.error(e)
+                return None
+            except requests.exceptions.RequestException as e:
+                logger.error(e)
+                return None
+            # logout mattermost admin 
+            self.logout(access_token)
+        
+            return response
+ 
+
     ## Logout Mattermost Admin
     # return status_text
     def logout(self, token):
@@ -115,8 +141,16 @@ class MattermostApi:
         mm_user['password'] = password
         mm_user['auth_data'] = user_json['profiles'][0]['email']
         mm_user['auth_service'] = 'email'
-        mm_user['last_name'] =  user_json['profiles'][0]['supporter']['lastName']
-        mm_user['first_name'] = user_json['profiles'][0]['supporter']['firstName']
+        
+        if 'lastName' in user_json['profiles'][0]['supporter']:
+            mm_user['last_name'] =  user_json['profiles'][0]['supporter']['lastName']
+        else:
+            mm_user['last_name'] = ""
+        
+        if 'firstName' in user_json['profiles'][0]['supporter']:
+            mm_user['first_name'] = user_json['profiles'][0]['supporter']['firstName']
+        else:
+            mm_user['first_name'] = ""
         mm_user['props'] = {
             'pool_id': user_json['id']
             }
