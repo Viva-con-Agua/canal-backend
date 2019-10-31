@@ -1,3 +1,10 @@
+###
+# Mattermost Api Class. Call the Mattermost Api 
+# https://api.mattermost.com/
+##
+
+
+
 from django.conf import settings
 # import the logging library
 import logging
@@ -7,7 +14,9 @@ logger = logging.getLogger(__name__)
 import json
 import requests
 
+
 class MattermostApi:
+    
 
     def __init__(self):
 
@@ -27,7 +36,10 @@ class MattermostApi:
         self.urls['get_user_email'] = settings.MM['ADDRESS'] + '/users/email'
 
 
-    ## Login
+    ## 
+    # Implements the login and logout for the admin account
+    ## 
+
     # Get mattermost api token.
     # If auth is correct return token 
     # else return None for Internal Server Error
@@ -50,69 +62,6 @@ class MattermostApi:
         except requests.exceptions.RequestException as e:
             logger.error(e)
             return None
-    
-    ## Create Mattermost User
-    # required user as json and mattermost token
-    # return mattermost status_text
-
-    def create_user(self, user):
-        
-        # get access token via login function
-        access_token = self.login()
-        # if access_token == None return None for Internal Server Error
-        if access_token == None:
-            return None
-
-        # else request create_user url
-        else:
-            # create headers
-            headers = self.headers
-            headers['Authorization'] = 'Bearer ' + access_token
-            
-            # try request with create_user url
-            try:
-                response = requests.post(
-                    self.urls['create_user'],
-                    headers=headers,
-                    data=json.dumps(user)
-                )
-            except requests.exceptions.MissingSchema as e:
-                logger.error(e)
-                return None
-            except requests.exceptions.RequestException as e:
-                logger.error(e)
-                return None
-            # logout mattermost admin
-            self.logout(access_token)
-        
-            return response
-
-    
-    def get_user_email(self, email):
-        access_token = self.login()
-        if access_token == None:
-            return None
-        else:
-            # create headers for request
-            headers = self.headers
-            headers['Authorization'] = 'Bearer ' + access_token
-            # url for requests
-            url = self.urls['get_user_email'] + '/' + email
-            #try request with get_user_email url
-            try:
-                response = requests.get(url)
-            except requests.exceptions.MissingSchema as e:
-                logger.error(e)
-                return None
-            except requests.exceptions.RequestException as e:
-                logger.error(e)
-                return None
-            # logout mattermost admin 
-            self.logout(access_token)
-        
-            return response
- 
-
     ## Logout Mattermost Admin
     # return status_text
     def logout(self, token):
@@ -133,25 +82,116 @@ class MattermostApi:
             logger.error(e)
             return None
 
-    # required user as json and password string
-    # return mattermost user
-    def build_user_model(seld, user_json, password):
-        mm_user = {}
-        mm_user['email'] = user_json['profiles'][0]['email']
-        mm_user['password'] = password
-        mm_user['auth_data'] = user_json['profiles'][0]['email']
-        mm_user['auth_service'] = 'email'
-        
-        if 'lastName' in user_json['profiles'][0]['supporter']:
-            mm_user['last_name'] =  user_json['profiles'][0]['supporter']['lastName']
-        else:
-            mm_user['last_name'] = ""
-        
-        if 'firstName' in user_json['profiles'][0]['supporter']:
-            mm_user['first_name'] = user_json['profiles'][0]['supporter']['firstName']
-        else:
-            mm_user['first_name'] = ""
-        mm_user['props'] = {
-            'pool_id': user_json['id']
-            }
-        return mm_user
+
+    ##
+    # User Contain function for api/v4/users
+    ##
+
+    ## Create Mattermost User
+    # required user as json and access_token
+    # return response of MattermostApi function 'Create a user' 
+    def create_user(self, user, access_token):
+        # create headers
+        headers = self.headers
+        headers['Authorization'] = 'Bearer ' + access_token
+        # try request with create_user url
+        try:
+            response = requests.post(
+                self.urls['create_user'],
+                headers=headers,
+                data=json.dumps(user)
+            )
+        except requests.exceptions.MissingSchema as e:
+            logger.error(e)
+            return None
+        except requests.exceptions.RequestException as e:
+            logger.error(e)
+            return None
+        return response
+    
+    ## Get Mattermost user by email
+    # required email and access_token
+    # return response of MattermostApi function 'Get user by email'
+    def get_user_by_email(self, email, access_token):
+        headers = self.headers
+        headers['Authorization'] = 'Bearer ' + access_token
+        url = settings.MM['ADDRESS'] + '/api/v4/users/email/' + email
+        try: 
+            response = requests.get(
+                    url,
+                    headers=headers
+                    )
+        except requests.exceptions.MissingSchema as e:
+            logger.error(e)
+            return None
+        except requests.exceptions.RequestException as e:
+            logger.error(e)
+            return None
+        return response
+    
+    ##
+    # Team function for /api/v4/teams requests
+    ##
+    
+    ## List teams
+    # required access_token
+    # return response of MattermostApi function 'Get Teams'
+    def list_teams(self, access_token):
+        headers = self.headers
+        headers['Authorization'] = 'Bearer ' + access_token
+        url = settings.MM['ADDRESS'] + '/teams' 
+        try:
+            response = requests.get(
+                url,
+                headers=headers
+                    )
+        except requests.exceptions.MissingSchema as e:
+            logger.error(e)
+            return None
+        except requests.exceptions.RequestException as e:
+            logger.error(e)
+            return None
+        return response
+    
+    ## get team by name
+    # required name and access_token
+    # return response of MattermostApi function 'Get a team by name'
+    def get_team_by_name(self, name, access_token):
+        headers = self.headers
+        headers['Authorization'] = 'Bearer ' + access_token
+        print(name)
+        url = settings.MM['ADDRESS'] + '/api/v4/teams/name/' + name
+        try: 
+            response = requests.get(
+                    url,
+                    headers=headers
+                    )
+        except requests.exceptions.MissingSchema as e:
+            logger.error(e)
+            return None
+        except requests.exceptions.RequestException as e:
+            logger.error(e)
+            return None
+        return response
+
+    ## join user to a team by id
+    # required user_id, team_id and access_token
+    # return response of MattermostApi function 'Add user to team'
+    def join_user_team_by_id(self, user_id, team_id, access_token):
+        headers = self.headers
+        headers['Authorization'] = 'Bearer ' + access_token
+        data = {'team_id': team_id, 'user_id': user_id}
+        url = settings.MM['ADDRESS'] + '/api/v4/teams/' + team_id + '/members' 
+        try:
+            response = requests.post(
+                url,
+                headers=headers,
+                data= json.dumps(data)
+                    )
+        except requests.exceptions.MissingSchema as e:
+            logger.error(e)
+            return None
+        except requests.exceptions.RequestException as e:
+            logger.error(e)
+            return None
+        return response

@@ -32,7 +32,7 @@ CONTEXTPATH = 'backend/canal/'
 MM = {
         'ID': 'admin@vivaconagua.org',
         'PASSWORD': 'Password23!23!',
-        'ADDRESS': 'http://172.2.0.34:8000' 
+        'ADDRESS': 'http://172.2.0.34:8000',
         }
 POOL_AUTH = {
         'AUTH_SERVER': '/drops',
@@ -41,6 +41,11 @@ POOL_AUTH = {
         'HOST': 'http://localhost',
         'HOST_INT': 'http://172.2.0.3:9000'
         }
+ENTITIES = {
+        'WG': 'WasserGmbH',
+        'EV': 'EV',
+        'goldeimer': 'goldeimer'
+    }
 
 # Application definition
 
@@ -89,8 +94,12 @@ WSGI_APPLICATION = 'canal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'canal-database',
+    'USER':'canal-database',
+    'PASSWORD':'canal-database',
+    'HOST': '172.2.200.33',
+    'PORT':'3306',
     }
 }
 

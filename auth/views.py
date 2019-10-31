@@ -43,7 +43,7 @@ def redirect_uri(request):
     access_token_response = dropsApi.get_access_token(code)
     # if response == None return Internal Server Error
     if access_token_response == None:
-        return HttpResponse({'Error': 'Internal Server Error'}, status=500)
+        return HttpResponse('{"Error": "Internal Server Error"}', status=500)
     # if 200 store token in access_token
     elif access_token_response.status_code == 200:
         try:
@@ -52,7 +52,7 @@ def redirect_uri(request):
             request.session['access_token'] = access_token
         # if token empty return 401
         except KeyError:
-            return HttpResponse({'Error': 'No access_token'}, status=401)
+            return HttpResponse('{"Error": "No access_token"}', status=401)
     # else return drops request
     else: 
         return HttpResponse(access_token_response.text, status=access_token_response.status_code)
@@ -60,6 +60,6 @@ def redirect_uri(request):
     # request profile and handle response
     profile = dropsApi.get_profile(access_token)
     if profile == None:
-        return HttpResponse({'Error': 'Internal Server Error'}, status=500)
+        return HttpResponse('{"Error": "Internal Server Error"}', status=500)
     else:
         return HttpResponse(profile.text, status=profile.status_code)
