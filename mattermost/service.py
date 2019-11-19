@@ -89,7 +89,7 @@ class Service:
     
     def has_account(self, email):
         # initial MattermostApi
-        mattermostApi = MattermostApi
+        mattermostApi = MattermostApi()
         # get Mattermost access_token via login api request
         access_token = mattermostApi.login()
         if access_token == None:
