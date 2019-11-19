@@ -95,7 +95,7 @@ class Service:
         if access_token == None:
             return None
         # get account via request
-        result = mattermostApi.get_user_by_email(email)
+        result = mattermostApi.get_user_by_email(email, access_token)
         if result == None:
             return None
         mattermostApi.logout()
