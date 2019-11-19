@@ -11,7 +11,7 @@ class Service:
         self.dummy = "dummy"
     
     # create user with given password
-    def create_user(self, user_json, password):
+    def create_employee(self, user_json, password):
         # initial MattermostApi
         mattermostApi = MattermostApi()
         utils = Utils()
@@ -55,7 +55,17 @@ class Service:
             ##
             # Handels team request
             ##
-            # get team by entity name
+            # get teams by entity name
+
+            # global team for all employee
+            global_team_response = mattermostApi.get_team_by_name(settings.ENTITIES['global'], access_token)
+            if team_response.status_code == 200:
+                global_team = json.loads(global_team_response.text)
+            else:
+                logger.error(utils.error_response(global_team_response, 'get_team_by_name'))
+                global_team = None
+            
+            # entity team for employee entity
             team_response = mattermostApi.get_team_by_name(entity, access_token)
             # status_code response a team
             if team_response.status_code == 200:
@@ -64,9 +74,12 @@ class Service:
                 logger.error(utils.error_response(team_response, 'get_team_by_name'))
                 team = None
 
-            # if there is an user and there is an team, match both via id
-            if user is not None and team is not None:
-                mattermostApi.join_user_team_by_id(user['id'], team['id'], access_token)
+            # if there is an user and the global team has found join user global there is an team, match both via id
+            if user is not None and global_team is not None:
+                mattermostApi.join_user_team_by_id(user['id'], global_team['id'])
+                # if entity found, join entity team
+                if team is not None:
+                    mattermostApi.join_user_team_by_id(user['id'], team['id'], access_token)
         ##
         # Logout mattermost admin
         ##

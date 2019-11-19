@@ -64,7 +64,7 @@ def hasAccount(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def createUser(request):
+def createEmployee(request):
     # get password from body
     body = json.loads(request.body)
     try:
@@ -87,7 +87,7 @@ def createUser(request):
      
     elif profile.status_code == 200:
         service = Service()
-        result = service.create_user(json.loads(profile.text), password)
+        result = service.create_employee(json.loads(profile.text), password)
         if result == None:
             return HttpResponse("{'Error':'Internal Server Error'}", status=500)
         else:

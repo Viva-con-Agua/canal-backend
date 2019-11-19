@@ -42,8 +42,15 @@ POOL_AUTH = {
         'HOST_INT': 'http://172.2.0.3:9000'
         }
 ENTITIES = {
-        'WG': 'WasserGmbH',
-        'EV': 'EV',
+        'vcade': 'WasserGmbH',
+        'vcaca': 'VcA-DE',
+        'vcach': '',
+        'vcaat': '',
+        'vcaza': '',
+        'vcaug': '',
+        'wassergmbh': '',
+        'millgall': '',
+        'stiftung': '',
         'goldeimer': 'goldeimer'
     }
 
