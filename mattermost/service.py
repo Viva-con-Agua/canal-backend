@@ -98,7 +98,7 @@ class Service:
         result = mattermostApi.get_user_by_email(email, access_token)
         if result == None:
             return None
-        mattermostApi.logout()
+        mattermostApi.logout(access_token)
         return result
 
 
