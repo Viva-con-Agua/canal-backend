@@ -59,7 +59,7 @@ class Service:
 
             # global team for all employee
             global_team_response = mattermostApi.get_team_by_name(settings.ENTITIES['global'], access_token)
-            if team_response.status_code == 200:
+            if global_team_response.status_code == 200:
                 global_team = json.loads(global_team_response.text)
             else:
                 logger.error(utils.error_response(global_team_response, 'get_team_by_name'))
