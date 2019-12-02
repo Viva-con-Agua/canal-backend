@@ -76,7 +76,7 @@ class Service:
 
             # if there is an user and the global team has found join user global there is an team, match both via id
             if user is not None and global_team is not None:
-                mattermostApi.join_user_team_by_id(user['id'], global_team['id'])
+                mattermostApi.join_user_team_by_id(user['id'], global_team['id'], access_token)
                 # if entity found, join entity team
                 if team is not None:
                     mattermostApi.join_user_team_by_id(user['id'], team['id'], access_token)
