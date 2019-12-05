@@ -80,6 +80,10 @@ class Service:
                 # if entity found, join entity team
                 if team is not None:
                     mattermostApi.join_user_team_by_id(user['id'], team['id'], access_token)
+                else:
+                    logger.error('team is not defined')
+            else:
+                logger.error('globalteam is not defined')
         ##
         # Logout mattermost admin
         ##
